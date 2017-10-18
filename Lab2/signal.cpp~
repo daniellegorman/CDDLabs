@@ -1,0 +1,42 @@
+/*Author: Danielle Gorman
+  Date: 9/10/17
+  Description: Main Program for Semaphore to run. This program uses 
+  semaphores to run task one first, and task two second."
+*/
+
+#include "Semaphore.h"
+#include <iostream>
+#include <thread>
+
+void a1(std::shared_ptr<Semaphore> theSemaphore){
+  std::cout << "task a1"<< std::endl;
+  theSemaphore->Signal();
+}
+void b2(std::shared_ptr<Semaphore> theSemaphore){
+  theSemaphore->Wait();
+  std::cout << "Task b2" << std::endl;
+}
+void a2(std::shared_ptr<Semaphore> theSemaphore){
+  theSemaphore->Signal();
+  std::cout << "Task a2" << std::endl;
+}
+void b1(std::shared_ptr<Semaphore> theSemaphore){
+  theSemaphore->Wait();
+  std::cout << "Task b1" << std::endl;
+}
+
+int main(void){
+  std::thread threadOne, threadTwo, threadThree, threadFour;
+  std::shared_ptr<Semaphore> sem( new Semaphore);
+  /**< Launch the threads  */
+  threadOne=std::thread(a1,sem);
+  threadTwo=std::thread(b2,sem);
+  threadThree=std::thread(a2,sem);
+  threadFour=std::thread(b1,sem);
+  std::cout << "Launched from the main\n";
+  threadOne.join();
+  threadTwo.join();
+  threadThree.join();
+  threadFour.join();
+  return 0;
+}
